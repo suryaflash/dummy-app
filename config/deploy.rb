@@ -37,7 +37,7 @@ set :application, 'dummyapp'
 
     set :deploy_to, '/var/www/dummyapp'
 
-    set :linked_files, %w{config/database.yml}
+    set :linked_files, "config/database.yml", "config/secrets.yml"
     set :linked_dirs, %w{log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
 
     namespace :deploy do
