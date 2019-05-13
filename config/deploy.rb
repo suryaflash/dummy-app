@@ -1,16 +1,14 @@
 # config valid for current version and patch releases of Capistrano
 lock "~> 3.11.0"
 
+set :application, "dummyapp"
+set :repo_url, "git@github.com:suryaflash/dummy-app.git"
+set :deploy_to, '/var/www/dummyapp'
 
-set :application, 'dummyapp'
-    set :repo_url, 'git@github.com:suryaflash/dummy-app.git'
 
-    set :deploy_to, '/var/www/ubuntu/dummyapp'
+ append :linked_files, "config/database.yml", "config/secrets.yml"
+    append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets", "vendor/bundle", "public/system", "public/uploads"
 
-    set :linked_files, %w{config/database.yml}
-    set :linked_dirs, %w{log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
-
-  
 # Default branch is :master
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
 

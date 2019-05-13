@@ -1,9 +1,3 @@
-
-set :stage, :production
-
-    # Replace 127.0.0.1 with your server's IP address!
-    server '18.216.84.192', user: 'ubuntu', roles: %w{web app}
-
 # server-based syntax
 # ======================
 # Defines a single server with a list of roles and multiple properties.
@@ -65,3 +59,4 @@ set :stage, :production
 #     auth_methods: %w(publickey password)
 #     # password: "please use keys"
 #   }
+server '18.216.84.192', user: 'ubuntu', roles: %w{app db web}
