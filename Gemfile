@@ -33,6 +33,7 @@ gem 'jbuilder', '~> 2.5'
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
+gem 'figaro'
 
 gem 'capistrano', '~> 3.1.0'
     gem 'capistrano-bundler', '~> 1.1.2'
