@@ -1,0 +1,631 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Language" content="en_US">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deploy Ruby On Rails on Ubuntu 16.04 Xenial Xerus | GoRails</title>
+<meta name="stripe-key" content="pk_daFP6nPmDBA00HxJrslPhckbWUZ92" />
+<meta name="google-site-verification" content="ju-3k3BBfiCNNz3Ug59RQi-dTrGY5uI4wG7L8SHNjRo" />
+<meta name="keywords" content="rails, ruby on rails, screencasts, gorails, railscast, railscasts, tips, tricks, tutorials, training, podcasts, programming">
+<meta name="description" content="A guide to setting up a Ruby on Rails production environment on Ubuntu 16.04 Xenial Xerus with Git, MySQL, PostgreSQL, and Capistrano">
+
+<link rel="author" href="https://plus.google.com/106699287110566383664/posts" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@GoRails" />
+<meta name="twitter:title" content="Deploy Ruby On Rails on Ubuntu 16.04 Xenial Xerus | GoRails" />
+<meta name="twitter:description" content="A guide to setting up a Ruby on Rails production environment on Ubuntu 16.04 Xenial Xerus with Git, MySQL, PostgreSQL, and Capistrano" />
+<meta name="twitter:creator" content="@excid3" />
+<meta name="twitter:image" content="https://d2i2nj5el4wq1j.cloudfront.net/assets/open-graph-a4a29a9e779f665ab0a606152d8714e8f465bdf835e64de14d798bb62ff3eeb9.jpg" />
+<meta property="og:title" content="Deploy Ruby On Rails on Ubuntu 16.04 Xenial Xerus | GoRails - GoRails" />
+<meta property="og:url" content="https://gorails.com/deploy/ubuntu/16.04" />
+<meta property="og:type" content="website" />
+<meta property="og:description" content="A guide to setting up a Ruby on Rails production environment on Ubuntu 16.04 Xenial Xerus with Git, MySQL, PostgreSQL, and Capistrano" />
+<meta property="og:site_name" content="GoRails" />
+<meta property="og:image" content="https://d2i2nj5el4wq1j.cloudfront.net/assets/open-graph-a4a29a9e779f665ab0a606152d8714e8f465bdf835e64de14d798bb62ff3eeb9.jpg" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:400,400i,600,700,800">
+<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-Bx4pytHkyTDy3aJKjGkGoHPt3tvv6zlwwjc3iqN7ktaiEMLDPqLSZYts2OjKcBx1" crossorigin="anonymous">
+<link rel="stylesheet" media="all" href="https://d2i2nj5el4wq1j.cloudfront.net/assets/application-b518d7a2288b5b25808f3f6bb8aaf174e2c97b05f8a6c9f6d93bc58e2e611c75.css" data-turbolinks-track="reload" />
+<script src="https://d2i2nj5el4wq1j.cloudfront.net/assets/application-09336845654819bdaf599f3359be80629eef77eef13fdfe39ce34d8bcb42406f.js" data-turbolinks-track="reload"></script>
+<script src="https://js.stripe.com/v3/" data-turbolinks-track="reload"></script>
+<script src="https://js.braintreegateway.com/v2/braintree.js" data-turbolinks-track="reload"></script>
+<meta name="csrf-param" content="authenticity_token" />
+<meta name="csrf-token" content="UU9CAkMP275M63llZymTPb79HbMC1d6bAvZMVt6fbtFu4moU8ULhsF/x/aXF0pGN6J0DCiTpVe2mdxMnUHHcKw==" />
+<meta name="apple-mobile-web-app-title" content="GoRails">
+<meta name="application-name" content="GoRails">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="https://gorails.com/blog.rss" />
+<script type="text/javascript">
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-8399719-16', 'auto');
+  </script>
+
+<!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+  <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+</head>
+<body>
+<a class="sr-only" href="#content">Skip to main content</a>
+<header id="header-main">
+
+<div id="search-main" class="navbar-search">
+<div class="container">
+
+<form class="navbar-search-form" action="/search" accept-charset="UTF-8" method="get"><input name="utf8" type="hidden" value="&#x2713;" />
+<div class="form-group">
+<div class="input-group input-group-transparent">
+<div class="input-group-prepend">
+<span class="input-group-text"><i class="fas fa-search"></i></span>
+</div>
+<input type="text" name="q" id="q" class="form-control" placeholder="What do you want to learn?" />
+</div>
+</div>
+</form>
+
+</div>
+</div>
+
+<nav class="navbar navbar-main navbar-expand-lg navbar-transparent navbar-dark bg-gradient-dark" id="navbar-main">
+<div class="container">
+<a class="navbar-brand mr-lg-5" href="/">
+<img alt="GoRails Logo" title="GoRails" style="height: 20px;" src="https://d2i2nj5el4wq1j.cloudfront.net/assets/logo-white-2ff3ecfb6b8f3c5bf9a6679ad0b135529dad66478a5dd89718935c798886a505.svg" />
+</a>
+<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-main-collapse" aria-controls="navbar-main-collapse" aria-expanded="false" aria-label="Toggle navigation">
+<span class="navbar-toggler-icon"></span>
+</button>
+<div class="collapse navbar-collapse" id="navbar-main-collapse">
+<ul class="navbar-nav align-items-lg-center">
+<li class="nav-item dropdown dropdown-animate" data-toggle="hover">
+<a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Screencasts</a>
+<div class="dropdown-menu dropdown-menu-lg dropdown-menu-arrow py-0">
+<div class="list-group">
+<a class="list-group-item list-group-item-action" href="/series">
+<div class="media d-flex align-items-center">
+<img class="img-saturate" style="width: 50px" src="https://d2i2nj5el4wq1j.cloudfront.net/assets/series-5681894893757c61d193ff3df71cf1884bf6d75adb9de2587469e18bf90decf9.png" />
+<div class="media-body ml-3">
+<h6 class="mb-1">Tutorial Series</h6>
+<p class="mb-0">View screencasts by curated topics.</p>
+</div>
+</div>
+</a> <a class="list-group-item list-group-item-action" href="/episodes">
+<div class="media d-flex align-items-center">
+<img class="img-saturate" style="width: 50px" src="https://d2i2nj5el4wq1j.cloudfront.net/assets/episodes-0a8a612f4492913d1b3b8c3fe894efdc785843d41b6118a3315d213c33b5761a.png" />
+<div class="media-body ml-3">
+<h6 class="mb-1">All Episodes</h6>
+<p class="mb-0">Dive into the archive of all episodes.</p>
+</div>
+</div>
+</a>
+<h6 class="px-4 pt-3 mt-1 border-top text-sm text-uppercase text-muted">Latest Episode</h6>
+<a class="list-group-item list-group-item-action" href="/episodes/actionable-errors-in-rails-6">
+<div class="media d-flex align-items-center">
+<img class="img-saturate" style="width: 50px" src="https://embed-ssl.wistia.com/deliveries/ecc446cff99f8622e84c14553e9a8e4c.jpg" />
+<div class="media-body ml-3">
+<h6 class="mb-1">Actionable Errors in Rails 6</h6>
+<p class="mb-0">One of the coolest new feat...</p>
+</div>
+</div>
+</a> </div>
+</div>
+</li>
+<li class="nav-item dropdown dropdown-animate" data-toggle="hover">
+<a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Guides</a>
+<div class="dropdown-menu dropdown-menu-lg dropdown-menu-arrow py-0">
+<div class="list-group">
+<a class="list-group-item list-group-item-action" href="/setup">
+<div class="media d-flex align-items-center">
+<img class="img-saturate" style="width: 50px" src="https://d2i2nj5el4wq1j.cloudfront.net/assets/guides/setup-7a21012cfeb7e60bf3f21acd484ac8e79e7d618acd9fd12735809b004b310abb.png" />
+<div class="media-body ml-3">
+<h6 class="mb-1">Install Rails</h6>
+<p class="mb-0">Setup your development environment.</p>
+</div>
+</div>
+</a>
+<a class="list-group-item list-group-item-action" href="/deploy/ubuntu">
+<div class="media d-flex align-items-center">
+<img class="img-saturate" style="width: 50px" src="https://d2i2nj5el4wq1j.cloudfront.net/assets/guides/deploy-50cf6d62584a63b973f0c303e605040e6d398e535ee5c3469ddee777493eac2b.png" />
+<div class="media-body ml-3">
+<h6 class="mb-1">Deploy Rails</h6>
+<p class="mb-0">Configure your production server.</p>
+</div>
+</div>
+</a>
+<a class="list-group-item list-group-item-action" href="/deploy/actioncable">
+<div class="media d-flex align-items-center">
+<img class="img-saturate" style="width: 50px" src="https://d2i2nj5el4wq1j.cloudfront.net/assets/guides/actioncable-87f4ab20f89ebb0089813e1cb39ab1c9afc28656f72a7ab6af49b237d721198e.png" />
+<div class="media-body ml-3">
+<h6 class="mb-1">Deploy ActionCable</h6>
+<p class="mb-0">Learn how to modify production to run websockets.</p>
+</div>
+</div>
+</a>
+<div class="dropdown-divider"></div>
+<a class="dropdown-item text-center mb-2" href="/guides">See All Guides</a>
+</div>
+</div>
+</li>
+<li class="nav-item "><a class="nav-link" href="/forum">Community</a></li>
+<li class="nav-item">
+<a href="#" class="nav-link" data-action="search-open" data-target="#search-main"><i class="far fa-search"></i></a>
+</li>
+</ul>
+<ul class="navbar-nav align-items-lg-center ml-lg-auto">
+<li class="nav-item"><a class="nav-link" href="/pricing">Pricing</a></li>
+<li class="nav-item"><a class="nav-link" href="/users/sign_in">Login</a></li>
+<li class="nav-item mr-0">
+<a class="nav-link d-lg-none" href="/users/sign_up">Get started</a>
+<a class="btn btn-sm btn-info btn-circle btn-icon d-none d-lg-inline-flex" href="/users/sign_up">
+<span class="btn-inner--text">Get started</span>
+<span class="btn-inner--icon"><i class="fas fa-angle-right"></i></span>
+</a> </li>
+</ul>
+</div>
+</div>
+</nav>
+</header>
+<main>
+<section class="slice">
+
+<div class="container position-relative zindex-100">
+<div class="row row-grid justify-content-around align-items-center">
+<div class="col-md-9">
+<h1 class="lh-150 mb-3">Deploy Ruby On Rails on<br /> Ubuntu 16.04 Xenial Xerus</h1>
+<p class="lead text-muted mb-0">A guide to setting up a Ruby on Rails production environment</p>
+</div>
+</div>
+<h5 class="text-center mt-5">Operating System</h5>
+<ul class="nav nav-pills d-flex justify-content-center">
+<li class="nav-item"><a class="nav-link " href="/deploy/ubuntu/18.04">Ubuntu 18.04</a></li>
+<li class="nav-item"><a class="nav-link active" href="/deploy/ubuntu/16.04">Ubuntu 16.04</a></li>
+<li class="nav-item"><a class="nav-link " href="/deploy/ubuntu/14.04">Ubuntu 14.04</a></li>
+<li class="nav-item"><a class="nav-link " href="/deploy/ubuntu/12.04">Ubuntu 12.04</a></li>
+</ul>
+</div>
+</section>
+<article>
+<div class="container">
+<section class="bs-docs-section">
+<div class="embed-responsive embed-responsive-16by9 mb-4">
+<iframe class="embed-responsive-item" width="1280" height="720" src="https://www.youtube.com/embed/WBPV4vjzcjQ" frameborder="0" allowfullscreen></iframe>
+</div>
+<h2 id="overview" class="page-header">Overview</h2>
+<p><span class="estimated-time"><i class="fas fa-clock-o "></i> This will take about 45 minutes.</span></p>
+<div class="card card-body border-success text-center mb-4">
+<div class="card-body">
+<strong>Skip all this work and let Hatchbox configure your servers and deploy Rails apps to it.</strong>
+<br />
+<br />
+<a class="btn btn-success" target="blank" href="https://hatchbox.io/?utm_source=gorails&amp;utm_medium=link&amp;utm_campaign=deploy_tutorial">Check out Hatchbox!</a>
+</div>
+</div>
+<p>We will be setting up a Ruby on Rails production environment on Ubuntu 16.04 LTS Xenial Xerus.</p>
+<p>Since we setup Ubuntu for our development environment, we also want to use it in production. This keeps your application running consistently between development and production. We're using an LTS version of Ubuntu in production because it is supported for several years where a normal version of Ubuntu isn't.</p>
+<p>Using Ubuntu LTS in production allows you to continue receiving security updates which is important for your production server(s).</p>
+<p>We're going to be setting up a Droplet on <a href="https://www.digitalocean.com/?refcode=87fcb9dab7a3">Digital Ocean</a> for our server. It costs $5/mo and is a great place to host your applications.</p>
+<p><strong>If you sign up with <a href="https://www.digitalocean.com/?refcode=87fcb9dab7a3">my Digital Ocean referral link</a>, you'll get 2 months ($10) free credit to try it out.</strong></p>
+</section>
+<section class="bs-docs-section">
+<h2 id="vps" class="page-header">Creating A Virtual Private Server</h2>
+<p>You can use any cloud server hosting company you choose for your Rails application. I've had excellent experience with <a href="https://www.digitalocean.com/?refcode=87fcb9dab7a3">Digital Ocean</a> and <a href="https://www.linode.com/?r=a02b271802c33ff2f38b3d5335089d76648ca6c2">Linode</a> with the servers I have used. If you're looking for alternatives outside the US or otherwise, just google "VPS hosting". A VPS is a virtual private server. It's just like a server you setup at home, only virtualize and running with a suite of other servers in a datacenter.</p>
+<p>First, we need to choose which OS to use. We're going to be using Ubuntu 16.04 LTS x64. Your application may require a different OS or version, but if you're not sure this is generally what you should use.</p>
+<p><a href="https://d2i2nj5el4wq1j.cloudfront.net/assets/droplet-image-16.04-fd2d83e1e8c94ee97508b02d7d083ab0b3ba189199c292d6e6be1cf465b399d8.png"><img alt="Droplet Image" class="img-fluid" src="https://d2i2nj5el4wq1j.cloudfront.net/assets/droplet-image-16.04-fd2d83e1e8c94ee97508b02d7d083ab0b3ba189199c292d6e6be1cf465b399d8.png" /></a></p>
+<p>Since we're using <a href="https://www.digitalocean.com/?refcode=87fcb9dab7a3">Digital Ocean</a> for our cloud server, the first thing we're going to do is configure a new one. I'm going with the Droplet with <strong>1GB of RAM</strong>. You can setup whichever size server you prefer, keep in mind that if you choose a 512MB server you may run into some slowness with a low amount of RAM.</p>
+<p><a href="https://d2i2nj5el4wq1j.cloudfront.net/assets/droplet-size-15f9b293394889a7eca8a59a17c091b76170fefb41945e0a145dc1046b514f97.png"><img alt="Droplet Size" class="img-fluid" src="https://d2i2nj5el4wq1j.cloudfront.net/assets/droplet-size-15f9b293394889a7eca8a59a17c091b76170fefb41945e0a145dc1046b514f97.png" /></a></p>
+<p>The next step is to choose your location. Choose one close to you so that you can have better connection speeds.</p>
+<p><a href="https://d2i2nj5el4wq1j.cloudfront.net/assets/droplet-region-16ad571e1fea4d77a38ffc2d8ddb2a977eb98e1ddd4796521e9738a7b5f9bd21.png"><img alt="Droplet Region" class="img-fluid" src="https://d2i2nj5el4wq1j.cloudfront.net/assets/droplet-region-16ad571e1fea4d77a38ffc2d8ddb2a977eb98e1ddd4796521e9738a7b5f9bd21.png" /></a></p>
+<p><em>Optionally you can add your SSH key into the Droplet so you can SSH in and skip the ssh-copy-id step.</em></p>
+<p>Once Digital Ocean has configured your server, check your email to get your password for the new cloud server.</p>
+<p>You should follow the instructions in the email to login via SSH for the very first time and verify it is working.</p>
+<p>The first thing we will do on our new server is create the user account we'll be using to run our applications and work from there.</p>
+<pre><code class="language-bash">sudo adduser deploy
+    sudo adduser deploy sudo
+    su deploy</code></pre>
+<p>Before we move forward is that we're going to setup SSH to authenticate via keys instead of having to use a password to login. It's more secure and will save you time in the long run.</p>
+<p>We're going to use <code>ssh-copy-id</code> to do this. If you're on OSX you may need to run <code>brew install ssh-copy-id</code> but if you're following this tutorial on Linux desktop, you should already have it.</p>
+<p>Once you've got <code>ssh-copy-id</code> installed, run the following and replace IPADDRESS with the one for your server:</p>
+<p class="alert alert-info">Make sure you run ssh-copy-id on your computer, and NOT the server.</p>
+<pre><code class="language-bash">ssh-copy-id <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a4c0c1d4c8cbdde4edf4e5e0e0f6e1f7f7">[email&#160;protected]</a></code></pre>
+<p>Now when you run <code>ssh <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="513534213d3e2811180110151503140202">[email&#160;protected]</a></code> you will be logged in automatically. Go ahead and SSH again and verify that it doesn't ask for your password before moving onto the next step.</p>
+<p class="alert alert-warning">For the next steps, <strong>make sure you are logged in as the deploy user on the server!</strong></p>
+</section>
+<section class="bs-docs-section">
+<h2 id="ruby" class="page-header">Installing Ruby</h2>
+<p><strong>Choose the version of Ruby you want to install:</strong></p>
+<div class="form-group">
+<select id="ruby_version" class="form-control">
+<option value="2.6.1">
+2.6.1 (Recommended)
+</option>
+<option value="2.5.3">
+2.5.3
+</option>
+<option value="2.4.5">
+2.4.5
+</option>
+<option value="2.3.8">
+2.3.8
+</option>
+<option value="2.2.10">
+2.2.10
+ </option>
+<option value="2.1.10">
+2.1.10
+</option>
+<option value="2.0.0-p648">
+2.0.0-p648
+</option>
+</select>
+</div>
+<p>The first step is to install some dependencies for Ruby and Rails.</p>
+<p>To make sure we have everything necessary for Webpacker support in Rails, we're first going to start by adding the Node.js and Yarn repositories to our system before installing them.</p>
+<pre><code class="language-bash">curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+
+sudo apt-get update
+sudo apt-get install git-core curl zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev software-properties-common libffi-dev nodejs yarn</code></pre>
+<p>Next we're going to be installing Ruby using one of three methods. Each have their own benefits, most people prefer using rbenv these days, but if you're familiar with rvm you can follow those steps as well. I've included instructions for installing from source as well, but in general, you'll want to choose either rbenv or rvm.</p>
+<p><b>Choose one method</b>. Some of these conflict with each other, so choose the one that sounds the most interesting to you, or go with my suggestion, rbenv.</p>
+<ul id="myTab" class="nav nav-tabs">
+<li class="nav-item"><a class="nav-link active" href="#ruby-rbenv" data-toggle="tab">Using rbenv (Recommended)</a></li>
+<li class="nav-item"><a class="nav-link" href="#ruby-rvm" data-toggle="tab">Using rvm</a></li>
+<li class="nav-item"><a class="nav-link" href="#ruby-source" data-toggle="tab">From source</a></li>
+</ul>
+<div class="tab-content">
+<div class="tab-pane active" id="ruby-rbenv">
+<p>Installing with <code>rbenv</code> is a simple two step process. First you install <code>rbenv</code>, and then <code>ruby-build</code>:
+<pre><code class="language-bash">cd
+git clone https://github.com/rbenv/rbenv.git ~/.rbenv
+echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc
+echo 'eval "$(rbenv init -)"' >> ~/.bashrc
+exec $SHELL
+
+git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
+echo 'export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"' >> ~/.bashrc
+exec $SHELL
+
+rbenv install <span class="ruby-version">2.6.1</span>
+rbenv global <span class="ruby-version">2.6.1</span>
+ruby -v</code></pre>
+</div>
+<div class="tab-pane fade" id="ruby-rvm">
+<p>The installation for <code>rvm</code> is pretty simple:</p>
+<pre><code class="language-bash">sudo apt-get install libgdbm-dev libncurses5-dev automake libtool bison libffi-dev
+gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB
+curl -sSL https://get.rvm.io | bash -s stable
+source ~/.rvm/scripts/rvm
+rvm install <span class="ruby-version">2.6.1</span>
+rvm use <span class="ruby-version">2.6.1</span> --default
+ruby -v</code></pre>
+</div>
+<div class="tab-pane fade" id="ruby-source">
+<p>Arguably the least useful Ruby setup for development is installing from source, but I thought I'd give you the steps anyways:</p>
+<pre><code class="language-bash">cd
+wget http://ftp.ruby-lang.org/pub/ruby/<span class="major-minor">2.6</span>/ruby-<span class="ruby-version">2.6.1</span>.tar.gz
+tar -xzvf ruby-<span class="ruby-version">2.6.1</span>.tar.gz
+cd ruby-<span class="ruby-version">2.6.1</span>/
+./configure
+make
+sudo make install
+ruby -v</code></pre>
+</div>
+</div>
+<p>The last step is to install Bundler</p>
+<pre><code class="language-bash">gem install bundler</code></pre>
+<p>rbenv users need to run <code>rbenv rehash</code> after installing bundler.</p>
+<section class="bs-docs-section">
+<h2 id="nginx-passenger" class="page-header">Installing Nginx</h2>
+<p>Phusion is the company that develops Passenger and they recently put out an official Ubuntu package that ships with Nginx and Passenger pre-installed.</p>
+<p>We'll be using that to setup our production server because it's very easy to setup.</p>
+<pre><code class="language-bash">sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 561F9B9CAC40B2F7
+    sudo apt-get install -y apt-transport-https ca-certificates
+
+    # Add Passenger APT repository
+    sudo sh -c 'echo deb https://oss-binaries.phusionpassenger.com/apt/passenger xenial main > /etc/apt/sources.list.d/passenger.list'
+    sudo apt-get update
+
+    # Install Passenger & Nginx
+    sudo apt-get install -y nginx-extras passenger</code></pre>
+<p>So now we have Nginx and passenger installed. We can manage the Nginx webserver by using the service command:</p>
+<pre><code class="language-bash">sudo service nginx start</code></pre>
+<p>Open up the server's IP address in your browser to make sure that nginx is up and running.</p>
+<p>The <code>service</code> command also provides some other methods such as <code>restart</code> and <code>stop</code> that allow you to easily restart and stop your webserver.</p>
+<p>Next, we need to update the Nginx configuration to point Passenger to the version of Ruby that we're using. You'll want to open up <code>/etc/nginx/nginx.conf</code> in your favorite editor. I like to use <code>vim</code>, so I'd run this command:</p>
+<pre class="language-bash"><code>sudo vim /etc/nginx/nginx.conf
+
+    # You could also use nano if you don't like vim
+    # sudo nano /etc/nginx/nginx.conf</code></pre>
+<p>Find the following lines, and uncomment them:</p>
+<pre><code class="language-bash">##
+    # Phusion Passenger
+    ##
+    # Uncomment it if you installed ruby-passenger or ruby-passenger-enterprise
+    ##
+
+    include /etc/nginx/passenger.conf;</code></pre>
+<p>Save and close nginx.conf. Then open <code>/etc/nginx/passenger.conf</code> in your editor to modify the ruby line:</p>
+<pre class="language-bash"><code>sudo vim /etc/nginx/passenger.conf
+
+    # You could also use nano if you don't like vim
+    # sudo nano /etc/nginx/passenger.conf</code></pre>
+<p>And change the passenger_ruby line to point to your ruby executable:</p>
+<pre><code class="language-bash">passenger_ruby /home/deploy/.rbenv/shims/ruby; # If you use rbenv
+    # passenger_ruby /home/deploy/.rvm/wrappers/ruby-2.1.2/ruby; # If use use rvm, be sure to change the version number
+    # passenger_ruby /usr/bin/ruby; # If you use ruby from source</code></pre>
+<p>The <code>passenger_ruby</code> is the important line here. Make sure you only set this once and use the line from the example that pertains to the version of Ruby you installed.</p>
+<p>Once you've changed <code>passenger_ruby</code> to use the right version Ruby, you can run the following command to restart Nginx with the new Passenger configuration.</p>
+<pre><code class="language-bash">sudo service nginx restart</code></pre>
+<p>Now that we've restarted Nginx, the Rails application will be served up using the deploy user just how we want. In the Capistrano section we will talk about configuring Nginx to serve up your Rails application.</p>
+</section>
+<section class="bs-docs-section">
+<h2 id="database" class="page-header">MySQL and PostgreSQL Database Setup</h2>
+<p>Setting up your production database is pretty easy. Make sure to keep in mind that you should use a different password for your production databases.</p>
+<p>Depending on what database you want to use, follow the steps related to the database:</p>
+<h3 id="mysql">Installing MySQL</h3>
+<p>All you need to do in order to install MySQL is to run the following command:</p>
+<pre><code class="language-bash">sudo apt-get install mysql-server mysql-client libmysqlclient-dev</code></pre>
+<p>You can use the root user and password set during installation for your database or you can <a target="blank" href="https://www.digitalocean.com/community/articles/how-to-create-a-new-user-and-grant-permissions-in-mysql">add a new user</a> to MySQL.</p>
+<p>Make sure you also create your app's database now. If you're not sure how to do this, follow <a target="blank" href="https://wiki.gandi.net/en/hosting/using-linux/tutorials/ubuntu/createdatabase">this guide to create your mysql database</a>. Take note of your database name and password so you can use this when we setup the <code>database.yml</code> file later on.</p>
+<h3 id="postgresql">Installing PostgreSQL</h3>
+<p>Postgres 9.3 is available in the Ubuntu repositories and we can install it like so:</p>
+<pre><code class="language-bash">sudo apt-get install postgresql postgresql-contrib libpq-dev</code></pre>
+<p>Next we need to setup our postgres user (also named "deploy" but different from our linux user named "deploy") and database:</p>
+<pre><code class="language-bash">sudo su - postgres
+    createuser --pwprompt deploy
+    createdb -O deploy my_app_name_production # change "my_app_name" to your app's name which we'll also use later on
+    exit</code></pre>
+<p>The password you type in here will be the one to put in your <code>my_app/current/config/database.yml</code> later when you deploy your app for the first time.</p>
+</section>
+<section class="bs-docs-section">
+<h2 id="capistrano" class="page-header">Capistrano Setup</h2>
+<p class="alert alert-warning">For Capistrano, <strong>make sure you do these steps on your development machine inside your Rails app.</strong></p>
+<p>The first step is to add Capistrano to your <code>Gemfile</code>:</p>
+<pre><code class="language-ruby">gem 'capistrano', '~> 3.7', '>= 3.7.1'
+    gem 'capistrano-rails', '~> 1.2'
+    gem 'capistrano-passenger', '~> 0.2.0'
+
+    # Add this if you're using rbenv
+    # gem 'capistrano-rbenv', '~> 2.1'
+
+    # Add this if you're using rvm
+    # gem 'capistrano-rvm'</code></pre>
+<p>Once these are added, run the following command to generate your capistrano configuration.</p>
+<pre><code class="language-bash">cap install STAGES=production</code></pre>
+<p>Next we need to make some additions to our Capfile to include bundler, rails, and rbenv/rvm (if you're using them). Edit your <code>Capfile</code> and add these lines:</p>
+<pre><code class="language-ruby">require 'capistrano/rails'
+    require 'capistrano/passenger'
+
+    # If you are using rbenv add these lines:
+    # require 'capistrano/rbenv'
+    # set :rbenv_type, :user
+    # set :rbenv_ruby, '2.6.1'
+
+    # If you are using rvm add these lines:
+    # require 'capistrano/rvm'
+    # set :rvm_type, :user
+    # set :rvm_ruby_version, '2.6.1'</code></pre>
+<p>After we've got Capistrano installed, we can configure the <code>config/deploy.rb</code> to setup our general configuration for our app. Edit that file and make it like the following replacing "myapp" with the name of your application and git repository:</p>
+<pre><code class="language-ruby">set :application, "my_app_name"
+    set :repo_url, "<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="24434d5064415c45495448410a474b49">[email&#160;protected]</a>:me/my_repo.git"
+
+    set :deploy_to, '/home/deploy/my_app_name'
+
+    append :linked_files, "config/database.yml", "config/secrets.yml"
+    append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets", "vendor/bundle", "public/system", "public/uploads"</code></pre>
+<p>Now we need to open up our <code>config/deploy/production.rb</code> file to set the server IP address that we want to deploy to:</p>
+<pre><code class="language-ruby"># Replace 127.0.0.1 with your server's IP address!
+    server '127.0.0.1', user: 'deploy', roles: %w{app db web}</code></pre>
+<p>If you have any trouble with Capistrano or the extensions for it, check out <a href="https://github.com/capistrano/">Capistrano&#39;s Github page</a>.</p>
+</section>
+<section class="bs-docs-section">
+<h2 id="final-steps" class="page-header">Final Steps</h2>
+<p>Thankfully there aren't a whole lot of things to do left!</p>
+<h3>Adding The Nginx Host</h3>
+<p>In order to get Nginx to respond with the Rails app, we need to modify it's sites-enabled.</p>
+<p>Open up <code>/etc/nginx/sites-enabled/default</code> in your text editor and we will replace the file's contents with the following:</p>
+<pre><code class="language-bash">server {
+            listen 80;
+            listen [::]:80 ipv6only=on;
+
+            server_name mydomain.com;
+            passenger_enabled on;
+            rails_env    production;
+            root         /home/deploy/my_app_name/current/public;
+
+            # redirect server error pages to the static page /50x.html
+            error_page   500 502 503 504  /50x.html;
+            location = /50x.html {
+                root   html;
+            }
+    }</code></pre>
+<p>This is our Nginx configuration for a server listening on port 80. You need to change the <code>server_name</code> values to match the domain you want to use and in <code>root</code> replace "myapp" with the name of your application.</p>
+<h3>Connecting The Database</h3>
+<p>One optional thing I would recommend is to remove your <code>config/database.yml</code> and <code>config/secrets.yml</code> git and only store example copies in your git repo. This way we can easily copy the files for setting up development, but our production environment can symlink files on the server so that our production secrets and passwords are only stored on the production server.</p>
+<p>First we'll move these files to their example names in the git repo.</p>
+<pre><code class="language-bash">echo "config/database.yml\nconfig/secrets.yml" >> .gitignore
+    git add .gitignore
+    git mv config/secrets.yml config/secrets.yml.example
+    git mv config/database.yml config/database.yml.example
+    git commit -m "Only store example secrets and database configs"
+    cp config/secrets.yml.example config/secrets.yml
+    cp config/database.yml.example config/database.yml</code></pre>
+<p>You can run <code>cap production deploy</code> to deploy your application, but it's going to fail this first time because we haven't created either of these files on the server which we will do in just a second.</p>
+<pre><code class="language-bash">linked file /home/deploy/build.gorails.com/shared/config/database.yml does not exist on IP_ADDRESS</code></pre>
+<p>One last time, ssh into your server as the <code>deploy</code> user and this time we need to create two files. First is the <code>database.yml</code> that uses the password for the postgres user you created earlier.</p>
+<pre><code class="language-bash"># /home/deploy/my_app_name/shared/config/database.yml
+    production:
+      adapter: postgresql
+      host: 127.0.0.1
+      database: my_app_name_production
+      username: deploy
+      password: YOUR_POSTGRES_PASSWORD
+      encoding: unicode
+      pool: 5</code></pre>
+<p>Now we create <code>secrets.yml</code>. We need to run <code>rake secret</code> on your development machine and take the secret key output of that and paste that in as <code>YOUR_SECRET_KEY</code> on the server.</p>
+<pre><code class="language-bash"># /home/deploy/my_app_name/shared/config/secrets.yml
+    production:
+      secret_key_base: YOUR_SECRET_KEY</code></pre>
+<p>You can run <code>cap production deploy</code> one last time to get your full deployment to run. This should completed successfully and you should see your new site live! You can just run Capistrano again to deploy any new changes you've pushed up to your Git repository.</p>
+<h3>Restarting The Site</h3>
+<p>One last thing you should know is that restarting just the Rails application with Passenger is very easy. If you ssh into the server, you can run <code>touch my_app_name/current/tmp/restart.txt</code> and Passenger will restart the application for you. It monitors the file's timestamp to determine if it should restart the app. This is helpful when you want to restart the app manually without deploying it.</p>
+<h3>Conclusion</h3>
+<p>And there you have it, a very long-winded explanation of all the different things you need to do while setting up an application to be deployed. There is a lot of system administration pieces that can expand upon this, but that's for another time. Please let me know if you have any questions, comments, or suggestions!</p>
+</section>
+</div>
+</article>
+<section class="slice slice-lg bg-dark mt-5">
+<span class="tongue tongue-top"><i class="far fa-angle-down"></i></span>
+<div class="container">
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://f.convertkit.com/ckjs/ck.5.js"></script>
+<div class="mb-md text-center">
+<h3 data-element="header" class="heading h3 text-white">Subscribe to the newsletter</h3>
+<div class="fluid-paragraph text-center mt-4">
+<p data-element="subheader" class="lead lh-180 text-muted">Join 20,000+ developers who get early access to new screencasts, articles, guides, updates, and more.</p>
+ </div>
+</div>
+<div class="row justify-content-center">
+<div class="col-lg-8">
+<form action="https://app.convertkit.com/forms/733463/subscriptions" method="post" data-sv-form="733463" data-uid="24c30e2af0" data-format="inline" data-version="5" data-options="{&quot;settings&quot;:{&quot;after_subscribe&quot;:{&quot;action&quot;:&quot;message&quot;,&quot;success_message&quot;:null,&quot;redirect_url&quot;:&quot;&quot;},&quot;modal&quot;:{&quot;trigger&quot;:null,&quot;scroll_percentage&quot;:null,&quot;timer&quot;:null,&quot;devices&quot;:null,&quot;show_once_every&quot;:null},&quot;recaptcha&quot;:{&quot;enabled&quot;:false},&quot;return_visitor&quot;:{&quot;action&quot;:&quot;hide&quot;,&quot;custom_content&quot;:null},&quot;slide_in&quot;:{&quot;display_in&quot;:null,&quot;trigger&quot;:null,&quot;scroll_percentage&quot;:null,&quot;timer&quot;:null,&quot;devices&quot;:null,&quot;show_once_every&quot;:null}}}" min-width="400 500 600 700 800">
+<div data-element="fields">
+<ul class="text-danger" data-element="errors" data-group="alert"></ul>
+<div class="row">
+<div class="col-md-6">
+<div class="form-group">
+<input aria-label="First Name" name="fields[first_name]" required="" placeholder="First Name" type="text" class="form-control form-control-lg">
+</div>
+</div>
+<div class="col-md-6">
+<div class="form-group">
+<input name="email_address" placeholder="Email Address" required="" type="text" class="form-control form-control-lg">
+</div>
+</div>
+</div>
+<div class="form-group">
+<p class="text-center font-italic">By clicking this button, you agree to the GoRails <a class="underline text-muted" target="_blank" href="/terms">Terms of Service</a> and <a class="underline text-muted" target="_blank" href="/privacy">Privacy Policy</a>.</p>
+<button data-element="submit" class="btn btn-lg btn-block btn-primary btn-icon">
+<div class="formkit-spinner">
+<div></div>
+<div></div>
+<div></div>
+</div>
+<span>Subscribe</span>
+</button>
+</div>
+</div>
+<div class="mt-5 text-center font-weight-bold">More of a social being? We're also on <a class="underline text-muted" target="_blank" href="https://twitter.com/gorails">Twitter</a> and <a class="underline text-muted" target="_blank" href="https://youtube.com/gorailstv">YouTube</a>.</p>
+</form>
+</div>
+</div>
+</div>
+</section>
+<div class="container my-5">
+<div class="row">
+<div class="col-md-9 ml-auto mr-auto">
+<div id="discussion" data-behavior="discussion" data-id="deploy-ruby-on-rails-on-ubuntu-16-04-xenial-xerus">
+<div class="text-center">
+<i class="fas fa-spinner fa-spin"></i> Loading...
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<footer class="footer footer-light bg-white">
+<div class="container">
+<div class="row pt-md">
+<div class="col-lg-4 mb-5 mb-lg-0">
+<a href="/"><img data-src="https://d2i2nj5el4wq1j.cloudfront.net/assets/logo-603a6fca4061e4f05b3c6aa366499601ed24e78bc2becd559fed2ddbb1b7fb33.svg" class="mb-3" style="max-height:24px" src="https://d2i2nj5el4wq1j.cloudfront.net/assets/fallback-3eb10792d1f0c7e07e7248273540f1952d9a5a2996f4b5df70ab026cd9f05517.png" /></a>
+<p class="text-sm">Ruby on Rails guides, screencasts, and tutorials for web developers learning Ruby, Rails, Javascript, Turbolinks, Stimulus.js, Vue.js, and more.</p>
+<div class="copyright"><small>Icons by <a target="_blank" rel="noopener noreferrer" href="https://icons8.com">Icons8</a></small></div>
+</div>
+<div class="col-lg-2 col-6 col-sm-4 ml-lg-auto mb-5 mb-lg-0">
+<h6 class="heading mb-3">Platform</h6>
+<ul class="list-unstyled">
+<li><a href="/pricing">Pricing</a></li>
+<li><a href="/testimonials">Testimonials</a></li>
+<li><a href="/tool_categories">Rails Tools</a></li>
+<li><a href="/blog">Blog</a></li>
+</ul>
+</div>
+<div class="col-lg-2 col-6 col-sm-4 mb-5 mb-lg-0">
+<h6 class="heading mb-3">Extras</h6>
+<ul class="list-unstyled text-small">
+<li><a target="_blank" rel="noopener" href="https://hatchbox.io">Deploy Rails</a></li>
+<li><a target="_blank" rel="noopener" href="https://courses.gorails.com/">Courses</a></li>
+<li><a target="_blank" rel="noopener" href="https://remoteruby.transistor.fm/?utm_source=gorails&amp;utm_medium=homepage">Podcast</a></li>
+<li><a target="_blank" rel="noopener noreferrer" href="http://gorails.storenvy.com/">T-Shirts</a></li>
+</ul>
+</div>
+<div class="col-lg-2 col-sm-4 mb-5 mb-lg-0">
+<h6 class="heading mb-3">Company</h6>
+<ul class="list-unstyled">
+<li><a target="_blank" rel="noopener" href="http://gorails.uservoice.com/forums/259979-general">Support</a></li>
+<li><a href="/terms">Terms</a></li>
+<li><a href="/privacy">Privacy</a></li>
+<li><a href="/about">About</a></li>
+</ul>
+</div>
+</div>
+<div class="row align-items-center justify-content-md-between py-4 mt-4 delimiter-top">
+<div class="col-md-6">
+<div class="copyright text-sm font-weight-bold text-center text-md-left">
+© 2019 <a href="https://gorails.com/" class="font-weight-bold" target="_blank">GoRails, LLC</a>. All rights reserved.
+</div>
+</div>
+<div class="col-md-6">
+<ul class="nav justify-content-center justify-content-md-end mt-3 mt-md-0">
+<li class="nav-item">
+<a class="nav-link" href="https://github.com/gorails-screencasts" target="_blank">
+<i class="fab fa-github"></i>
+</a>
+</li>
+<li class="nav-item">
+<a class="nav-link" href="https://twitter.com/gorails" target="_blank">
+<i class="fab fa-twitter"></i>
+</a>
+</li>
+<li class="nav-item">
+<a class="nav-link" href="https://www.facebook.com/gorails" target="_blank">
+<i class="fab fa-facebook"></i>
+</a>
+</li>
+<li class="nav-item">
+<a class="nav-link" href="https://www.youtube.com/gorailstv" target="_blank">
+<i class="fab fa-youtube"></i>
+</a>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</footer>
+<script>
+  (function(i,s,o,g,r,a,m){i['ProfitWellObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m);
+  })(window,document,'script','https://dna8twue3dlxq.cloudfront.net/js/profitwell.js','profitwell');
+  profitwell('auth_token', '631ab5d1fb3171ff43ec050548d320b7'); // Your unique Profitwell public API token
+</script>
+
+<script>
+document.addEventListener("turbolinks:load", function() {
+var imgDefer = document.getElementsByTagName('img');
+for (var i=0; i<imgDefer.length; i++) {
+if(imgDefer[i].getAttribute('data-src')) {
+imgDefer[i].setAttribute('src',imgDefer[i].getAttribute('data-src'));
+} } });
+</script>
+</body>
+</html>
