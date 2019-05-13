@@ -38,10 +38,8 @@ gem 'figaro'
 gem 'capistrano', '~> 3.1.0'
     gem 'capistrano-bundler', '~> 1.1.2'
     gem 'capistrano-rails', '~> 1.1.1'
-    gem 'capistrano-passenger' , '~> 0.2.0'
+    gem 'capistrano-rvm', github: "capistrano/rvm"
 
-    # Add this if you're using rvm
-     gem 'capistrano-rvm', github: "capistrano/rvm"
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.1.0', require: false
