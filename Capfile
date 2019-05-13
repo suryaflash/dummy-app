@@ -19,8 +19,6 @@ install_plugin Capistrano::SCM::Git
    require 'capistrano/bundler'
     require 'capistrano/rails'
 
-    require "capistrano/scm/git"
-    install_plugin Capistrano::SCM::Git
 
     # If you are using rvm add these lines:
      require 'capistrano/rvm'
