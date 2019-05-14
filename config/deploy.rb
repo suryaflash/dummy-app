@@ -3,7 +3,7 @@ lock "~> 3.11.0"
 
 set :application, "dummyapp"
 set :repo_url, "git@github.com:suryaflash/dummy-app.git"
-set :deploy_to, '/var/www/dummyapp'
+set :deploy_to, '/var/www/testapp'
 
 
  append :linked_files, "config/database.yml", "config/secrets.yml"
